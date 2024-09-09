@@ -2,6 +2,18 @@
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
 
+import { init as serverInit } from 'launchdarkly-node-server-sdk';
+
+// Server-side SDK initialization
+const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
+await serverClient.waitForInitialization();
+
+// Get the feature flag value server-side
+const serverFlagValue = await serverClient.variation('your-feature-flag-key', user, false);
+
+// Don't forget to close the server client when you're done
+serverClient.close();
+
 // Define a user
 const user = {
   key: 'user-key-123',
@@ -30,6 +42,12 @@ const clientSideScript = `
 		<div class="flag-indicator">
 			Client-side Feature Flag Status: 
 			<span id="clientFlagStatus">Loading...</span>
+		</div>
+
+		<!-- Client-side feature flag indicator -->
+		<div class="flag-indicator">
+			Server-side Feature Flag Status: 
+			<span class={serverFlagValue ? 'green' : 'red'}>{serverFlagValue ? 'ON' : 'OFF'}</span>
 		</div>
 
 		<ul role="list" class="link-card-grid">
