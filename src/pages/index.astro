@@ -78,8 +78,9 @@ serverClient.close();
       </ul>
     </main>
 </Layout>
-
-
+ 
+<!-- LD APP | LD client-side SDK initialization 
+ comment this out if you're using the LD local-dev server -->
 <script define:vars={{ clientSideId: import.meta.env.PUBLIC_LD_CLIENT_SIDE_ID }}>
   document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing LaunchDarkly client-side SDK');
@@ -91,6 +92,26 @@ serverClient.close();
 
   });
 </script>
+
+<!-- end of LD App  client-side initialization -->
+
+<!-- ldcli local-dev server | LD client-side SDK initialization 
+ comment this out if you're using the LD Application -->
+ <script define:vars={{ clientSideId: import.meta.env.PUBLIC_LD_CLIENT_SIDE_ID }}>
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('Initializing LaunchDarkly client-side SDK');
+    const clientClient = LDClient.initialize(clientSideId, {
+      key: 'user-key-123',
+      name: 'DJ Toggle',
+      email: 'DJToggle@launchdarkly.com'
+    }, {
+      baseUrl: 'http://localhost:8765',
+      streamUrl: 'http://localhost:8765',
+      eventsUrl: 'http://localhost:8765'
+    });
+  });
+</script>
+<!-- end of local dev server client-side initialization -->
 
 <script src="https://unpkg.com/launchdarkly-js-client-sdk@2.19.0/dist/ldclient.min.js"></script>
 
