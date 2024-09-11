@@ -39,18 +39,28 @@ serverClient.close();
     <h1>Making the most of the LaunchDarkly CLI</h1>
       
       <!-- local-dev server or LD App indicator -->
+      <div class="connection-indicator">
+        Connection: 
+        <span class={import.meta.env.LD_SDK_KEY.includes('localhost') ? 'local' : 'remote'}>
+          {import.meta.env.LD_SDK_KEY.includes('localhost') ? 'Local Dev Server' : 'LaunchDarkly App'}
+        </span>
+      </div>
   
       <!-- Server-side feature flag indicator -->
       <div class="flag-indicator">
-        Server-side Feature Flag clientFlagStatus
-        <span class={serverFlagValue ? 'green' : 'red'}>{serverFlagValue ? 'ON' : 'OFF'}</span>
-      </div>
+          Server-side Feature Flag Status:
+          {serverFlagValue !== undefined ? (
+            <span class={serverFlagValue ? 'green' : 'red'}>{serverFlagValue ? 'ON' : 'OFF'}</span>
+          ) : (
+            <span class="not-connected">Not Connected</span>
+          )}
+        </div>
 
       <!-- Client-side feature flag indicator -->
       <div class="flag-indicator">
         Client-side Feature Flag Status:
-        <span id="clientFlagStatus" class="loading">Loading...</span>
-      </div>
+        <span id="clientFlagStatus" class="not-connected">Not Connected</span>
+      </div>      
 
 
       <!-- Card grid -->
@@ -156,4 +166,26 @@ serverClient.close();
     color: #ffff00;
     font-weight: bold;
   }
+
+  .connection-indicator {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+  }
+
+  .local {
+    color: #00ff00;
+    font-weight: bold;
+  }
+
+  .remote {
+    color: #0000ff;
+    font-weight: bold;
+  }
+
+  .not-connected {
+    color: #ff8c00;
+    font-weight: bold;
+  }
 </style>
+
