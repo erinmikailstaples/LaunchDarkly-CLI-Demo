@@ -12,18 +12,18 @@ const user = {
 
 // LD Application Server-side SDK initialization
 // Comment the below out if you are looking to use the LD local-server
-// const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
-// await serverClient.waitForInitialization();
+const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
+await serverClient.waitForInitialization();
 // end LD Application server-side SDK changes
 
 // LD local-server CLI server-side SDK initalization
 // ℹ️ NOTE: you cannot run both serverClient and localServerClient at the same time
-const serverClient = serverInit('launch-devly-demo', {
-  baseUri: 'http://localhost:8765',
-  streamUri: 'http://localhost:8765',
-  eventsUri: 'http://localhost:8765'
-});
-await serverClient.waitForInitialization();
+// const serverClient = serverInit('launch-devly-demo', {
+//   baseUri: 'http://localhost:8765',
+//   streamUri: 'http://localhost:8765',
+//   eventsUri: 'http://localhost:8765'
+// });
+// await serverClient.waitForInitialization();
 // end LD local-server CLI server-side SDK changes
 
 // Get the feature flag value server-side
@@ -43,25 +43,22 @@ await serverClient.close();
     <!-- server-side feature-flag indicator -->
     <div class="connection-indicator">
       Server-Side Connection:
-      <span class={'launch-devly-demo' === 'launch-devly-demo' ? 'local' : 'remote'}>
-        {'launch-devly-demo' === 'launch-devly-demo' ? 'Local Dev Server' : 'LaunchDarkly App'}
-      </span>
+      <span class={isLocalDevServer ? 'local' : 'remote'}>
+        {isLocalDevServer ? 'Local Dev Server' : 'LaunchDarkly App'}
+      </span>      
       - Flag Status: 
       <span class={serverFlagValue ? 'green' : 'red'}>
         {serverFlagValue ? 'ON' : 'OFF'}
       </span>
     </div>
-    
 
     <!-- Client-side feature flag indicator -->
     <div class="flag-indicator">
       Client-side Feature Flag Status:
       <span id="clientFlagStatus" class="not-connected">Not Connected</span>
-      - 
-      <span class={'launch-devly-demo' === 'launch-devly-demo' ? 'local' : 'remote'}>
-    {'launch-devly-demo' === 'launch-devly-demo' ? 'Local Dev Server' : 'LaunchDarkly App'}
-      </span>
-      </div>
+        - 
+      <span id="clientConnectionType" class="not-connected">Not Connected</span>
+    </div>
 
 
       <!-- Card grid -->
@@ -92,28 +89,38 @@ await serverClient.close();
  
 <!-- LD APP | LD client-side SDK initialization 
  comment this out if you're using the LD local-dev server -->
- <!-- <script define:vars={{ clientSideId: import.meta.env.PUBLIC_LD_CLIENT_SIDE_ID }}>
+<script define:vars={{ clientSideId: import.meta.env.PUBLIC_LD_CLIENT_SIDE_ID }}>
   document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing LaunchDarkly client-side SDK');
+    const isLocalDevServer = clientSideId === 'launch-devly-demo';
     const clientClient = LDClient.initialize(clientSideId, {
       key: 'user-key-123',
       name: 'DJ Toggle',
       email: 'DJToggle@launchdarkly.com'
-    });
+    }, isLocalDevServer ? {
+      baseUrl: 'http://localhost:8765',
+      streamUrl: 'http://localhost:8765',
+      eventsUrl: 'http://localhost:8765'
+    } : {});
 
     clientClient.on('ready', () => {
       const clientFlagValue = clientClient.variation('client-side', false);
       const clientFlagStatus = document.getElementById('clientFlagStatus');
-      clientFlagStatus.textContent = clientFlagValue ? 'ON - LD APP' : 'OFF - LD APP';
+      const clientConnectionType = document.getElementById('clientConnectionType');
+      
+      clientFlagStatus.textContent = clientFlagValue ? 'ON' : 'OFF';
       clientFlagStatus.className = clientFlagValue ? 'green' : 'red';
+      
+      clientConnectionType.textContent = isLocalDevServer ? 'Local Dev Server' : 'LaunchDarkly App';
+      clientConnectionType.className = isLocalDevServer ? 'local' : 'remote';
     });
   });
-</script> -->
+</script>
 <!-- end of LD App  client-side initialization -->
 
 <!-- ldcli local-dev server | LD client-side SDK initialization 
  comment this out if you're using the LD Application -->
- <script define:vars={{ clientSideId: 'launch-devly-demo' }}>
+ <!-- <script define:vars={{ clientSideId: 'launch-devly-demo' }}>
   document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing LaunchDarkly client-side SDK');
     const clientClient = LDClient.initialize(clientSideId, {
@@ -133,7 +140,7 @@ await serverClient.close();
       clientFlagStatus.className = clientFlagValue ? 'green' : 'red';
     });
   });
-</script>
+</script> -->
 <!-- end of local dev server client-side initialization -->
 
 <script src="https://unpkg.com/launchdarkly-js-client-sdk@2.19.0/dist/ldclient.min.js"></script>
@@ -192,7 +199,7 @@ await serverClient.close();
   }
 
   .remote {
-    color: #0000ff;
+    color: #c854c6;
     font-weight: bold;
   }
 
