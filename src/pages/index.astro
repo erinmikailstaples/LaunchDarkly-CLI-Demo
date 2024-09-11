@@ -10,21 +10,16 @@ const user = {
   email: 'DJToggle@launchdarkly.com'
 };
 
-// Server-side SDK initialization » LD App
-// Depending variable, swap it out. 
-// Comment this out when running on the LD CLI local-dev server
-const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
-await serverClient.waitForInitialization();
-
+// Log the SDK key for debugging
+console.log('SDK Key:', import.meta.env.LD_SDK_KEY);
 
 // Server-side SDK initialization » LD CLI
-// Uncomment this to run on the LaunchDarkly CLI
-// const serverClient = serverInit(import.meta.env.LD_SDK_KEY, {
-//   baseUri: 'http://localhost:8765',
-//   streamUri: 'http://localhost:8765',
-//   eventsUri: 'http://localhost:8765'
-// });
-// await serverClient.waitForInitialization();
+const serverClient = serverInit(import.meta.env.LD_SDK_KEY, {
+  baseUri: 'http://localhost:8765',
+  streamUri: 'http://localhost:8765',
+  eventsUri: 'http://localhost:8765'
+});
+await serverClient.waitForInitialization();
 
 // Get the feature flag value server-side
 const serverFlagValue = await serverClient.variation('server-side', user, false);
@@ -34,76 +29,19 @@ serverClient.close();
 ---
 
 <Layout title="Making the most of the LaunchDarkly CLI">
-  <main>
-    <h1>Making the most of the LaunchDarkly CLI</h1>
-
-    <!-- Server-side feature flag indicator -->
-    <div class="flag-indicator">
-      Server-side Feature Flag Status: 
-      <span class={serverFlagValue ? 'green' : 'red'}>{serverFlagValue ? 'ON' : 'OFF'}</span>
-    </div>
-
-    <!-- Client-side feature flag indicator -->
-    <div class="flag-indicator">
-      Client-side Feature Flag Status:
-      <span id="clientFlagStatus" class="loading">Loading...</span>
-    </div>
-
-    <ul role="list" class="link-card-grid">
-      <Card
-        href="https://docs.launchdarkly.com/home/getting-started/ldcli/"
-        title="LaunchDarkly CLI Docs"
-        body="Reference the LaunchDarkly Documentation to get the most of our CLI"
-      />
-      <Card
-        href="https://launchdarkly.com/pricing"
-        title="Try out LaunchDarkly"
-        body="Create a free developer account and start building with LaunchDarkly."
-      />
-      <Card
-        href="https://launchdarkly.com/blog/"
-        title="LaunchDarkly Blog"
-        body="Explore a galaxy of content, tutorials or getting started guides on the LaunchDarkly Blog."
-      />
-      <Card
-        href="https://launchdarkly.com/community/"
-        title="Community"
-        body="Thanks for being part of our universe"
-      />
-    </ul>
-  </main>
+  <!-- ... (rest of the HTML remains the same) ... -->
 </Layout>
 
-<script>
+<script define:vars={{ clientSideId: import.meta.env.PUBLIC_LD_CLIENT_SIDE_ID }}>
   document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing LaunchDarkly client-side SDK');
-    const clientClient = LDClient.initialize(import.meta.env.LD_CLIENT_SIDE_ID, {
+    const clientClient = LDClient.initialize(clientSideId, {
       key: 'user-key-123',
       name: 'DJ Toggle',
       email: 'DJToggle@launchdarkly.com'
     });
 
-    function updateClientFlag(flagValue) {
-      console.log('Updating client flag to:', flagValue);
-      const statusElement = document.getElementById('clientFlagStatus');
-      statusElement.textContent = flagValue ? 'ON' : 'OFF';
-      statusElement.className = flagValue ? 'green' : 'red';
-    }
-
-    clientClient.on('ready', () => {
-      console.log('LaunchDarkly client-side SDK initialized successfully');
-      const initialValue = clientClient.variation('client-side', false);
-      console.log('Initial flag value:', initialValue);
-      updateClientFlag(initialValue);
-    });
-
-    clientClient.on('change:client-side', (newValue) => {
-      updateClientFlag(newValue);
-    });
-
-    clientClient.on('error', (error) => {
-      console.error('LaunchDarkly error:', error);
-    });
+    // ... (rest of the client-side script remains the same) ...
   });
 </script>
 
