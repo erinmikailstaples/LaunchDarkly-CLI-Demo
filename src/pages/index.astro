@@ -13,13 +13,18 @@ const user = {
 // Log the SDK key for debugging
 console.log('SDK Key:', import.meta.env.LD_SDK_KEY);
 
-// Server-side SDK initialization » LD CLI
-const serverClient = serverInit(import.meta.env.LD_SDK_KEY, {
-  baseUri: 'http://localhost:8765',
-  streamUri: 'http://localhost:8765',
-  eventsUri: 'http://localhost:8765'
-});
+// Server-side SDK initialization
+const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
 await serverClient.waitForInitialization();
+
+// LD local-server CLI server-side SDK initalization
+// ℹ️ NOTE: you cannot run both serverClient and localServerClient at the same time
+// const serverClient = serverInit(import.meta.env.LD_SDK_KEY, {
+//   baseUri: 'http://localhost:8765',
+//   streamUri: 'http://localhost:8765',
+//   eventsUri: 'http://localhost:8765'
+// });
+// await serverClient.waitForInitialization();
 
 // Get the feature flag value server-side
 const serverFlagValue = await serverClient.variation('server-side', user, false);
@@ -29,8 +34,48 @@ serverClient.close();
 ---
 
 <Layout title="Making the most of the LaunchDarkly CLI">
-  <!-- ... (rest of the HTML remains the same) ... -->
+  <main>
+    <h1>Making the most of the LaunchDarkly CLI</h1>
+  
+      <!-- Server-side feature flag indicator -->
+      <div class="flag-indicator">
+        Server-side Feature Flag Status: 
+        <span class={serverFlagValue ? 'green' : 'red'}>{serverFlagValue ? 'ON' : 'OFF'}</span>
+      </div>
+  ``
+      <!-- Client-side feature flag indicator -->
+      <div class="flag-indicator">
+        Client-side Feature Flag Status:
+        <span id="clientFlagStatus" class="loading">Loading...</span>
+      </div>
+
+      <!-- Card grid -->
+  
+      <ul role="list" class="link-card-grid">
+        <Card
+          href="https://docs.launchdarkly.com/home/getting-started/ldcli/"
+          title="LaunchDarkly CLI Docs"
+          body="Reference the LaunchDarkly Documentation to get the most of our CLI"
+        />
+        <Card
+          href="https://launchdarkly.com/pricing"
+          title="Try out LaunchDarkly"
+          body="Create a free developer account and start building with LaunchDarkly."
+        />
+        <Card
+          href="https://launchdarkly.com/blog/"
+          title="LaunchDarkly Blog"
+          body="Explore a galaxy of content, tutorials or getting started guides on the LaunchDarkly Blog."
+        />
+        <Card
+          href="https://launchdarkly.com/community/"
+          title="Community"
+          body="Thanks for being part of our universe"
+        />
+      </ul>
+    </main>
 </Layout>
+
 
 <script define:vars={{ clientSideId: import.meta.env.PUBLIC_LD_CLIENT_SIDE_ID }}>
   document.addEventListener('DOMContentLoaded', () => {
@@ -45,6 +90,7 @@ serverClient.close();
 </script>
 
 <script src="https://unpkg.com/launchdarkly-js-client-sdk@2.19.0/dist/ldclient.min.js"></script>
+
 
 <style>
   main {
