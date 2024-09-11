@@ -1,9 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
-import { init as serverInit } from 'launchdarkly-node-server-sdk';
-
+import { init as serverInit } from '@launchdarkly/node-server-sdk';
 // Define the user first
+
 const user = {
   key: 'user-key-123',
   name: 'DJ Toggle',
@@ -18,7 +18,7 @@ const user = {
 
 // LD local-server CLI server-side SDK initalization
 // ℹ️ NOTE: you cannot run both serverClient and localServerClient at the same time
-const serverClient = serverInit(import.meta.env.LD_SDK_KEY, {
+const serverClient = serverInit('launch-devly-demo', {
   baseUri: 'http://localhost:8765',
   streamUri: 'http://localhost:8765',
   eventsUri: 'http://localhost:8765'
@@ -28,32 +28,26 @@ await serverClient.waitForInitialization();
 
 // Get the feature flag value server-side
 const serverFlagValue = await serverClient.variation('server-side', user, false);
+const isLocalDevServer = serverClient.baseUri === 'http://localhost:8765';
+
 
 // Close the server client
-serverClient.close();
+await serverClient.close();
+
 ---
 
 <Layout title="Making the most of the LaunchDarkly CLI">
   <main>
     <h1>Making the most of the LaunchDarkly CLI</h1>
       
-      <!-- local-dev server or LD App indicator -->
-      <div class="connection-indicator">
-        Connection: 
-        <span class={import.meta.env.LD_SDK_KEY.includes('localhost') ? 'local' : 'remote'}>
-          {import.meta.env.LD_SDK_KEY.includes('localhost') ? 'Local Dev Server' : 'LaunchDarkly App'}
-        </span>
-      </div>
-  
-      <!-- Server-side feature flag indicator -->
-      <div class="flag-indicator">
-          Server-side Feature Flag Status:
-          {serverFlagValue !== undefined ? (
-            <span class={serverFlagValue ? 'green' : 'red'}>{serverFlagValue ? 'ON' : 'OFF'}</span>
-          ) : (
-            <span class="not-connected">Not Connected</span>
-          )}
-        </div>
+    <!-- server-side feature-flag indicator -->
+    <div class="connection-indicator">
+      Connection: 
+      <span class={'launch-devly-demo' === 'launch-devly-demo' ? 'local' : 'remote'}>
+        {'launch-devly-demo' === 'launch-devly-demo' ? 'Local Dev Server' : 'LaunchDarkly App'}
+      </span>
+    </div>
+    
 
       <!-- Client-side feature flag indicator -->
       <div class="flag-indicator">
@@ -90,7 +84,7 @@ serverClient.close();
  
 <!-- LD APP | LD client-side SDK initialization 
  comment this out if you're using the LD local-dev server -->
-<!-- <script define:vars={{ clientSideId: import.meta.env.PUBLIC_LD_CLIENT_SIDE_ID }}>
+ <!-- <script define:vars={{ clientSideId: import.meta.env.PUBLIC_LD_CLIENT_SIDE_ID }}>
   document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing LaunchDarkly client-side SDK');
     const clientClient = LDClient.initialize(clientSideId, {
@@ -99,14 +93,19 @@ serverClient.close();
       email: 'DJToggle@launchdarkly.com'
     });
 
+    clientClient.on('ready', () => {
+      const clientFlagValue = clientClient.variation('client-side', false);
+      const clientFlagStatus = document.getElementById('clientFlagStatus');
+      clientFlagStatus.textContent = clientFlagValue ? 'ON - LD APP' : 'OFF - LD APP';
+      clientFlagStatus.className = clientFlagValue ? 'green' : 'red';
+    });
   });
 </script> -->
-
 <!-- end of LD App  client-side initialization -->
 
 <!-- ldcli local-dev server | LD client-side SDK initialization 
  comment this out if you're using the LD Application -->
- <script define:vars={{ clientSideId: import.meta.env.PUBLIC_LD_CLIENT_SIDE_ID }}>
+ <script define:vars={{ clientSideId: 'launch-devly-demo' }}>
   document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing LaunchDarkly client-side SDK');
     const clientClient = LDClient.initialize(clientSideId, {
@@ -117,6 +116,13 @@ serverClient.close();
       baseUrl: 'http://localhost:8765',
       streamUrl: 'http://localhost:8765',
       eventsUrl: 'http://localhost:8765'
+    });
+
+    clientClient.on('ready', () => {
+      const clientFlagValue = clientClient.variation('client-side', false);
+      const clientFlagStatus = document.getElementById('clientFlagStatus');
+      clientFlagStatus.textContent = clientFlagValue ? 'ON - LOCAL DEV' : 'OFF - LOCAL DEV';
+      clientFlagStatus.className = clientFlagValue ? 'green' : 'red';
     });
   });
 </script>
