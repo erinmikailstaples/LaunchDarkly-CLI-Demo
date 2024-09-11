@@ -10,9 +10,21 @@ const user = {
   email: 'DJToggle@launchdarkly.com'
 };
 
-// Server-side SDK initialization
+// Server-side SDK initialization » LD App
+// Depending variable, swap it out. 
+// Comment this out when running on the LD CLI local-dev server
 const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
 await serverClient.waitForInitialization();
+
+
+// Server-side SDK initialization » LD CLI
+// Uncomment this to run on the LaunchDarkly CLI
+// const serverClient = serverInit(import.meta.env.LD_SDK_KEY, {
+//   baseUri: 'http://localhost:8765',
+//   streamUri: 'http://localhost:8765',
+//   eventsUri: 'http://localhost:8765'
+// });
+// await serverClient.waitForInitialization();
 
 // Get the feature flag value server-side
 const serverFlagValue = await serverClient.variation('server-side', user, false);
