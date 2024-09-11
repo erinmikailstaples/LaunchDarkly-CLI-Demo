@@ -42,18 +42,26 @@ await serverClient.close();
       
     <!-- server-side feature-flag indicator -->
     <div class="connection-indicator">
-      Connection: 
+      Server-Side Connection:
       <span class={'launch-devly-demo' === 'launch-devly-demo' ? 'local' : 'remote'}>
         {'launch-devly-demo' === 'launch-devly-demo' ? 'Local Dev Server' : 'LaunchDarkly App'}
+      </span>
+      - Flag Status: 
+      <span class={serverFlagValue ? 'green' : 'red'}>
+        {serverFlagValue ? 'ON' : 'OFF'}
       </span>
     </div>
     
 
-      <!-- Client-side feature flag indicator -->
-      <div class="flag-indicator">
-        Client-side Feature Flag Status:
-        <span id="clientFlagStatus" class="not-connected">Not Connected</span>
-      </div>      
+    <!-- Client-side feature flag indicator -->
+    <div class="flag-indicator">
+      Client-side Feature Flag Status:
+      <span id="clientFlagStatus" class="not-connected">Not Connected</span>
+      - 
+      <span class={'launch-devly-demo' === 'launch-devly-demo' ? 'local' : 'remote'}>
+    {'launch-devly-demo' === 'launch-devly-demo' ? 'Local Dev Server' : 'LaunchDarkly App'}
+      </span>
+      </div>
 
 
       <!-- Card grid -->
@@ -121,7 +129,7 @@ await serverClient.close();
     clientClient.on('ready', () => {
       const clientFlagValue = clientClient.variation('client-side', false);
       const clientFlagStatus = document.getElementById('clientFlagStatus');
-      clientFlagStatus.textContent = clientFlagValue ? 'ON - LOCAL DEV' : 'OFF - LOCAL DEV';
+      clientFlagStatus.textContent = clientFlagValue ? 'ON' : 'OFF';
       clientFlagStatus.className = clientFlagValue ? 'green' : 'red';
     });
   });
