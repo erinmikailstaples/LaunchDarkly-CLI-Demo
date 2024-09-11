@@ -13,18 +13,19 @@ const user = {
 // Log the SDK key for debugging
 console.log('SDK Key:', import.meta.env.LD_SDK_KEY);
 
-// Server-side SDK initialization
-const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
-await serverClient.waitForInitialization();
+// LD Application Server-side SDK initialization
+// Comment the below out if you are looking to use the LD local-server
+// const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
+// await serverClient.waitForInitialization();
 
 // LD local-server CLI server-side SDK initalization
 // ℹ️ NOTE: you cannot run both serverClient and localServerClient at the same time
-// const serverClient = serverInit(import.meta.env.LD_SDK_KEY, {
-//   baseUri: 'http://localhost:8765',
-//   streamUri: 'http://localhost:8765',
-//   eventsUri: 'http://localhost:8765'
-// });
-// await serverClient.waitForInitialization();
+const serverClient = serverInit(import.meta.env.LD_SDK_KEY, {
+  baseUri: 'http://localhost:8765',
+  streamUri: 'http://localhost:8765',
+  eventsUri: 'http://localhost:8765'
+});
+await serverClient.waitForInitialization();
 
 // Get the feature flag value server-side
 const serverFlagValue = await serverClient.variation('server-side', user, false);
@@ -36,21 +37,23 @@ serverClient.close();
 <Layout title="Making the most of the LaunchDarkly CLI">
   <main>
     <h1>Making the most of the LaunchDarkly CLI</h1>
+      
+      <!-- local-dev server or LD App indicator -->
   
       <!-- Server-side feature flag indicator -->
       <div class="flag-indicator">
-        Server-side Feature Flag Status: 
+        Server-side Feature Flag clientFlagStatus
         <span class={serverFlagValue ? 'green' : 'red'}>{serverFlagValue ? 'ON' : 'OFF'}</span>
       </div>
-  ``
+
       <!-- Client-side feature flag indicator -->
       <div class="flag-indicator">
         Client-side Feature Flag Status:
         <span id="clientFlagStatus" class="loading">Loading...</span>
       </div>
 
+
       <!-- Card grid -->
-  
       <ul role="list" class="link-card-grid">
         <Card
           href="https://docs.launchdarkly.com/home/getting-started/ldcli/"
