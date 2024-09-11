@@ -17,6 +17,7 @@ console.log('SDK Key:', import.meta.env.LD_SDK_KEY);
 // Comment the below out if you are looking to use the LD local-server
 // const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
 // await serverClient.waitForInitialization();
+// end LD Application server-side SDK changes
 
 // LD local-server CLI server-side SDK initalization
 // ℹ️ NOTE: you cannot run both serverClient and localServerClient at the same time
@@ -26,6 +27,7 @@ const serverClient = serverInit(import.meta.env.LD_SDK_KEY, {
   eventsUri: 'http://localhost:8765'
 });
 await serverClient.waitForInitialization();
+// end LD local-server CLI server-side SDK changes
 
 // Get the feature flag value server-side
 const serverFlagValue = await serverClient.variation('server-side', user, false);
