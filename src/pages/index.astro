@@ -2,34 +2,46 @@
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
 import { init as serverInit } from '@launchdarkly/node-server-sdk';
-// Define the user first
 
+// Define the user first
 const user = {
   key: 'user-key-123',
   name: 'DJ Toggle',
   email: 'DJToggle@launchdarkly.com'
 };
 
+
+
+
 // LD Application Server-side SDK initialization
-// Comment the below out if you are looking to use the LD local-server
-const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
-await serverClient.waitForInitialization();
+// Comment the below out if you are looking to use the LD local-server\
+// const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
+// await serverClient.waitForInitialization();
 // end LD Application server-side SDK changes
 
 // LD local-server CLI server-side SDK initalization
 // ℹ️ NOTE: you cannot run both serverClient and localServerClient at the same time
-// const serverClient = serverInit('launch-devly-demo', {
-//   baseUri: 'http://localhost:8765',
-//   streamUri: 'http://localhost:8765',
-//   eventsUri: 'http://localhost:8765'
-// });
-// await serverClient.waitForInitialization();
+// LD local-server CLI server-side SDK initalization
+console.log('Initializing LaunchDarkly server-side SDK with local dev server');
+const serverClient = serverInit('local-dev-demo', {
+  baseUri: 'http://localhost:8765',
+  streamUri: 'http://localhost:8765',
+  eventsUri: 'http://localhost:8765'
+});
+// Get the feature flag value server-side
+
+console.log('Waiting for server client initialization...');
+await serverClient.waitForInitialization();
+console.log('Server client initialized successfully');
+
 // end LD local-server CLI server-side SDK changes
 
 // Get the feature flag value server-side
-const serverFlagValue = await serverClient.variation('server-side', user, false);
-const isLocalDevServer = serverClient.baseUri === 'http://localhost:8765';
 
+const serverFlagValue = await serverClient.variation('server-side', user, false);
+console.log('Server-side flag value:', serverFlagValue);
+
+const isLocalDevServer = serverClient.sdkKey === 'local-dev-demo';
 
 // Close the server client
 await serverClient.close();
@@ -39,7 +51,7 @@ await serverClient.close();
 <Layout title="Making the most of the LaunchDarkly CLI">
   <main>
     <h1>Making the most of the LaunchDarkly CLI</h1>
-      
+   
     <!-- server-side feature-flag indicator -->
     <div class="connection-indicator">
       Server-Side Connection:
@@ -50,6 +62,7 @@ await serverClient.close();
       <span class={serverFlagValue ? 'green' : 'red'}>
         {serverFlagValue ? 'ON' : 'OFF'}
       </span>
+      <br>
     </div>
 
     <!-- Client-side feature flag indicator -->
