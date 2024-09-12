@@ -98,10 +98,10 @@ await serverClient.close();
  
 <!-- LD APP | LD client-side SDK initialization 
  comment this out if you're using the LD local-dev server -->
-<script define:vars={{ clientSideId: import.meta.env.PUBLIC_LD_CLIENT_SIDE_ID }}>
+<!-- <script define:vars={{ clientSideId: import.meta.env.PUBLIC_LD_CLIENT_SIDE_ID }}>
   document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing LaunchDarkly client-side SDK');
-    const isLocalDevServer = clientSideId === 'launch-devly-demo';
+    const isLocalDevServer = clientSideId === 'local-dev-demo';
     const clientClient = LDClient.initialize(clientSideId, {
       key: 'user-key-123',
       name: 'DJ Toggle',
@@ -124,12 +124,12 @@ await serverClient.close();
       clientConnectionType.className = isLocalDevServer ? 'local' : 'remote';
     });
   });
-</script>
+</script> -->
 <!-- end of LD App  client-side initialization -->
 
 <!-- ldcli local-dev server | LD client-side SDK initialization 
  comment this out if you're using the LD Application -->
- <!-- <script define:vars={{ clientSideId: 'launch-devly-demo' }}>
+ <script define:vars={{ clientSideId: 'local-dev-demo' }}>
   document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing LaunchDarkly client-side SDK');
     const clientClient = LDClient.initialize(clientSideId, {
@@ -145,11 +145,17 @@ await serverClient.close();
     clientClient.on('ready', () => {
       const clientFlagValue = clientClient.variation('client-side', false);
       const clientFlagStatus = document.getElementById('clientFlagStatus');
+      const clientConnectionType = document.getElementById('clientConnectionType');
+      
       clientFlagStatus.textContent = clientFlagValue ? 'ON' : 'OFF';
       clientFlagStatus.className = clientFlagValue ? 'green' : 'red';
+      
+      clientConnectionType.textContent = 'Local Dev Server';
+      clientConnectionType.className = 'local';
     });
   });
-</script> -->
+</script>
+
 <!-- end of local dev server client-side initialization -->
 
 <script src="https://unpkg.com/launchdarkly-js-client-sdk@2.19.0/dist/ldclient.min.js"></script>
