@@ -13,7 +13,7 @@ const user = {
 // LD Application Server-side SDK initialization
 // Comment the below out if you are looking to use the LD local-server\
 // const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
-// await serverClient.waitForInitialization();
+// await serverClient.waitForInitialization({timeout: 5});
 // end LD Application server-side SDK changes
 
 // LD local-server CLI server-side SDK initalization
@@ -27,7 +27,7 @@ const serverClient = serverInit('local-dev-demo', {
 });
 
 console.log('Waiting for server client initialization...');
-await serverClient.waitForInitialization();
+await serverClient.waitForInitialization({timeout: 5});
 console.log('Server client initialized successfully');
 
 // end LD local-server CLI server-side SDK changes
