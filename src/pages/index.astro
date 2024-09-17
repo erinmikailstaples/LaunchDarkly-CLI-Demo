@@ -53,18 +53,20 @@ const user = {
   <main>
     <h1>Making the most of the LaunchDarkly CLI</h1>
    
-<!-- server-side feature-flag indicator -->
-<div class="connection-indicator">
-  Server-Side Connection:
-  <span class={isDisconnected ? 'disconnected' : (isLocalDevServer ? 'local' : (serverClient ? 'remote' : 'no-sdk'))}>
-    {isDisconnected ? 'Disconnected' : (isLocalDevServer ? 'Local Dev Server' : (serverClient ? 'LaunchDarkly App' : 'No SDK Connected'))}
-  </span>      
-  - Flag Status: 
-  <span class={isDisconnected ? 'disconnected' : (serverClient ? (serverFlagValue ? 'green' : 'red') : 'no-sdk')}>
-    {isDisconnected ? 'N/A' : (serverClient ? (serverFlagValue ? 'ON' : 'OFF') : 'N/A')}
-  </span>
-  <br>
-</div>
+    hese specific errors:
+
+    <!-- server-side feature-flag indicator -->
+    <div class="connection-indicator">
+      Server-Side Connection:
+      <span class={isDisconnected ? 'disconnected' : (isLocalDevServer ? 'local' : (serverClient ? 'remote' : 'no-sdk'))}>
+        {isDisconnected ? 'Disconnected' : (isLocalDevServer ? 'Local Dev Server' : (serverClient ? 'LaunchDarkly App' : 'No SDK Connected'))}
+      </span>      
+      - Flag Status: 
+      <span class={isDisconnected ? 'disconnected' : (serverClient ? (serverFlagValue ? 'green' : 'red') : 'no-sdk')}>
+        {isDisconnected ? 'N/A' : (serverClient ? (serverFlagValue ? 'ON' : 'OFF') : 'N/A')}
+      </span>
+      <br>
+    </div>
 
     <!-- Client-side feature flag indicator -->
     <div class="flag-indicator">

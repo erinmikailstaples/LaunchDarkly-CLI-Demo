@@ -11,9 +11,9 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.3",
+    "@launchdarkly/node-server-sdk": "^8.0.0",
     "astro": "^4.15.4",
     "launchdarkly-js-client-sdk": "^3.4.0",
-    "@launchdarkly/node-server-sdk": "^8.0.0",
     "typescript": "^5.6.2"
   }
 }

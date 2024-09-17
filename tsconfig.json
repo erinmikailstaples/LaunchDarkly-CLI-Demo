@@ -1,5 +1,5 @@
 {
-  "extends": "astro/tsconfigs/strict",
+  "extends": "astro/tsconfigs/base",
   "compilerOptions": {
     "types": ["@astrojs/client", "@launchdarkly/node-server-sdk"],
     "allowSyntheticDefaultImports": true,
