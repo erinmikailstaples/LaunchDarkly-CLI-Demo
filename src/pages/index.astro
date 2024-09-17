@@ -3,6 +3,13 @@ import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
 import { init as serverInit } from '@launchdarkly/node-server-sdk';
 
+// 👀➡️ No LD Connection 
+// 
+const isDisconnected = true;
+const serverFlagValue = false;
+const isLocalDevServer = false;
+// ⬅️ end no LD connection
+
 // Define the user first
 const user = {
   key: 'user-key-123',
@@ -12,10 +19,10 @@ const user = {
 
 // 👀➡️ LD Application Server-side SDK initialization
 // Comment the below out if you are looking to use the LD local-server
-const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
-console.log('Waiting for server client initialization...');
-await serverClient.waitForInitialization({timeout: 5});
-console.log('Server client initialized successfully');
+// const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
+// console.log('Waiting for server client initialization...');
+// await serverClient.waitForInitialization({timeout: 5});
+// console.log('Server client initialized successfully');
 // ⬅️ end LD Application server-side SDK changes
 
 // 👀➡️ LD local-server CLI server-side SDK initalization
@@ -29,17 +36,16 @@ console.log('Server client initialized successfully');
 // });
 // await serverClient.waitForInitialization({timeout: 5});
 // console.log('Server client initialized successfully');
-// ⬅️ end LD local-server CLI server-side SDK changes
 
-// Get the feature flag value server-side
 
-const serverFlagValue = await serverClient.variation('server-side', user, false);
-console.log('Server-side flag value:', serverFlagValue);
 
-const isLocalDevServer = serverClient.sdkKey === 'local-dev-demo';
+// 👀 ➡️ Uncomment the below when you're ready to connect it to LaunchDarkly via the SDK or Local Dev Server 
+// const serverFlagValue = await serverClient.variation('server-side', user, false);
+// console.log('Server-side flag value:', serverFlagValue);
+// const isLocalDevServer = serverClient.sdkKey === 'local-dev-demo';
 
-// Close the server client
-await serverClient.close();
+// await serverClient.close();
+// ⬅️ end server flag value
 
 ---
 
@@ -47,18 +53,18 @@ await serverClient.close();
   <main>
     <h1>Making the most of the LaunchDarkly CLI</h1>
    
-    <!-- server-side feature-flag indicator -->
-    <div class="connection-indicator">
-      Server-Side Connection:
-      <span class={isLocalDevServer ? 'local' : 'remote'}>
-        {isLocalDevServer ? 'Local Dev Server' : 'LaunchDarkly App'}
-      </span>      
-      - Flag Status: 
-      <span class={serverFlagValue ? 'green' : 'red'}>
-        {serverFlagValue ? 'ON' : 'OFF'}
-      </span>
-      <br>
-    </div>
+<!-- server-side feature-flag indicator -->
+<div class="connection-indicator">
+  Server-Side Connection:
+  <span class={isDisconnected ? 'disconnected' : (isLocalDevServer ? 'local' : (serverClient ? 'remote' : 'no-sdk'))}>
+    {isDisconnected ? 'Disconnected' : (isLocalDevServer ? 'Local Dev Server' : (serverClient ? 'LaunchDarkly App' : 'No SDK Connected'))}
+  </span>      
+  - Flag Status: 
+  <span class={isDisconnected ? 'disconnected' : (serverClient ? (serverFlagValue ? 'green' : 'red') : 'no-sdk')}>
+    {isDisconnected ? 'N/A' : (serverClient ? (serverFlagValue ? 'ON' : 'OFF') : 'N/A')}
+  </span>
+  <br>
+</div>
 
     <!-- Client-side feature flag indicator -->
     <div class="flag-indicator">
@@ -97,7 +103,7 @@ await serverClient.close();
  
 <!--  👀➡️ LD APP | LD client-side SDK initialization 
  comment this out if you're using the LD local-dev server -->
-<script define:vars={{ clientSideId: import.meta.env.PUBLIC_LD_CLIENT_SIDE_ID }}>
+<!-- <script define:vars={{ clientSideId: import.meta.env.PUBLIC_LD_CLIENT_SIDE_ID }}>
   document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing LaunchDarkly client-side SDK');
     const isLocalDevServer = clientSideId === 'local-dev-demo';
@@ -123,7 +129,7 @@ await serverClient.close();
       clientConnectionType.className = isLocalDevServer ? 'local' : 'remote';
     });
   });
-</script>
+</script> -->
 <!-- ⬅️ end of LD App  client-side initialization -->
 
 <!--  👀➡️ ldcli local-dev server | LD client-side SDK initialization 
@@ -219,6 +225,16 @@ await serverClient.close();
 
   .not-connected {
     color: #ff8c00;
+    font-weight: bold;
+  }
+
+  .disconnected {
+    color: #ff0000;
+    font-weight: bold;
+  }
+
+  .no-sdk {
+    color: #808080;
     font-weight: bold;
   }
 </style>
