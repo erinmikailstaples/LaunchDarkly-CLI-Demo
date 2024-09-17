@@ -10,15 +10,15 @@ const user = {
   email: 'DJToggle@launchdarkly.com'
 };
 
-// LD Application Server-side SDK initialization
+// 👀➡️ LD Application Server-side SDK initialization
 // Comment the below out if you are looking to use the LD local-server
 const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
 console.log('Waiting for server client initialization...');
 await serverClient.waitForInitialization({timeout: 5});
 console.log('Server client initialized successfully');
-// end LD Application server-side SDK changes
+// ⬅️ end LD Application server-side SDK changes
 
-// LD local-server CLI server-side SDK initalization
+// 👀➡️ LD local-server CLI server-side SDK initalization
 // ℹ️ NOTE: you cannot run both serverClient and localServerClient at the same time
 // LD local-server CLI server-side SDK initalization
 // console.log('Initializing LaunchDarkly server-side SDK with local dev server');
@@ -29,7 +29,7 @@ console.log('Server client initialized successfully');
 // });
 // await serverClient.waitForInitialization({timeout: 5});
 // console.log('Server client initialized successfully');
-// end LD local-server CLI server-side SDK changes
+// ⬅️ end LD local-server CLI server-side SDK changes
 
 // Get the feature flag value server-side
 
@@ -95,7 +95,7 @@ await serverClient.close();
     </main>
 </Layout>
  
-<!-- LD APP | LD client-side SDK initialization 
+<!--  👀➡️ LD APP | LD client-side SDK initialization 
  comment this out if you're using the LD local-dev server -->
 <script define:vars={{ clientSideId: import.meta.env.PUBLIC_LD_CLIENT_SIDE_ID }}>
   document.addEventListener('DOMContentLoaded', () => {
@@ -124,9 +124,9 @@ await serverClient.close();
     });
   });
 </script>
-<!-- end of LD App  client-side initialization -->
+<!-- ⬅️ end of LD App  client-side initialization -->
 
-<!-- ldcli local-dev server | LD client-side SDK initialization 
+<!--  👀➡️ ldcli local-dev server | LD client-side SDK initialization 
  comment this out if you're using the LD Application -->
  <!-- <script define:vars={{ clientSideId: 'local-dev-demo' }}>
   document.addEventListener('DOMContentLoaded', () => {
@@ -155,7 +155,7 @@ await serverClient.close();
   });
 </script> -->
 
-<!-- end of local dev server client-side initialization -->
+<!-- ⬅️ end of local dev server client-side initialization -->
 
 <script src="https://unpkg.com/launchdarkly-js-client-sdk@2.19.0/dist/ldclient.min.js"></script>
 
