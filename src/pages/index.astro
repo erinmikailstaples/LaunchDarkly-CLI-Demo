@@ -5,9 +5,9 @@ import { init as serverInit } from '@launchdarkly/node-server-sdk';
 
 // 👀➡️ No LD Connection 
 // 
-const isDisconnected = true;
-const serverFlagValue = false;
-const isLocalDevServer = false;
+// const isDisconnected = true;
+// const serverFlagValue = false;
+// const isLocalDevServer = false;
 // ⬅️ end no LD connection
 
 // Define the user first
@@ -19,10 +19,10 @@ const user = {
 
 // 👀➡️ LD Application Server-side SDK initialization
 // Comment the below out if you are looking to use the LD local-server
-// const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
-// console.log('Waiting for server client initialization...');
-// await serverClient.waitForInitialization({timeout: 5});
-// console.log('Server client initialized successfully');
+const serverClient = serverInit(import.meta.env.LD_SDK_KEY);
+console.log('Waiting for server client initialization...');
+await serverClient.waitForInitialization({timeout: 5});
+console.log('Server client initialized successfully');
 // ⬅️ end LD Application server-side SDK changes
 
 // 👀➡️ LD local-server CLI server-side SDK initalization
@@ -40,11 +40,10 @@ const user = {
 
 
 // 👀 ➡️ Uncomment the below when you're ready to connect it to LaunchDarkly via the SDK or Local Dev Server 
-// const serverFlagValue = await serverClient.variation('server-side', user, false);
-// console.log('Server-side flag value:', serverFlagValue);
-// const isLocalDevServer = serverClient.sdkKey === 'local-dev-demo';
-
-// await serverClient.close();
+const serverFlagValue = await serverClient.variation('server-side', user, false);
+console.log('Server-side flag value:', serverFlagValue);
+const isLocalDevServer = serverClient.sdkKey === 'local-dev-demo';
+await serverClient.close();
 // ⬅️ end server flag value
 
 ---
